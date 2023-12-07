@@ -28,8 +28,9 @@ class PowerNvidia():
     def append_energy_usage(self):
         cmd = "nvidia-smi --query-gpu=power.draw --format=csv"
         energy_usage = subprocess.check_output(cmd, shell=True)
-        energy_usage = energy_usage.decode("utf-8").strip().split("\n")[1]
+        energy_usage = energy_usage.decode("utf-8").replace(" W", "")
+        energy_usage = energy_usage.split("\n")[1:-1]
         #print(energy_usage)
-        energy = {"Energy GPU (Wh)":float(energy_usage.split(" ")[0]) * SAMPLING_FREQUENCY / 3600}
+        energy = {"GPU " + str(i): (float(energy_usage[i]) * SAMPLING_FREQUENCY / 3600) for i in range(len(energy_usage))}
         
         return energy

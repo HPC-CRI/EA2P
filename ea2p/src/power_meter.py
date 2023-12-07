@@ -23,7 +23,7 @@ import requests
 
 from .wrapper import*
 
-POWER_DEVICES = "cpu"
+POWER_DEVICES = "cpu,ram,gpu"
 
 LOGGER = logging.getLogger(__name__)
 

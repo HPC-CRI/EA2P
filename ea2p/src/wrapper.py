@@ -42,7 +42,9 @@ class PowerWrapper(Power):
                 self.intel = True
                 self.intel_power = PowerClientIntel()
             elif "Xeon" in cpuinfo.get_cpu_info()['brand_raw']:
-                power_objects.append(PowerServerIntel())
+                #power_objects.append(PowerServerIntel())
+                self.intel = True
+                self.intel_power = PowerServerIntel()
             elif "AMD" in cpuinfo.get_cpu_info()['brand_raw']:
                 self.amd_power = PowerAmdCpu()
                 self.amd = True
@@ -127,7 +129,7 @@ class PowerWrapper(Power):
         if self.amd:
             self.amd_power.stop()
             cpu_energy = self.amd_power.parse_log()
-            usages = pd.concat([cpu_energy.iloc[[-1]].reset_index(drop=True), usages], axis=1)
+            usages = pd.concat([cpu_energy, usages], axis=1)
         
         if self.intel:
             self.intel_record.append(self.intel_power.append_energy_usage())

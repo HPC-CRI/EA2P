@@ -13,7 +13,7 @@ import pandas as pd  # type: ignore
 import requests
 
 JOULE_TO_WATT = 3600000000          # micro joules to watt
-SAMPLING_FREQUENCY = 2
+SAMPLING_FREQUENCY = 1/1000
 
 PACKAGE_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
 HOME_DIR = Path.home()

@@ -162,4 +162,3 @@ class PowerAmdCpu2():
 #sudo setcap cap_sys_rawio=ep /usr/sbin/turbostat
 #
 
-

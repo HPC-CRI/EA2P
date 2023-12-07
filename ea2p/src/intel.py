@@ -11,7 +11,7 @@ import glob
 from .utils import*
 from .power import PowerLinux
 
-from .utils import SAMPLING_FREQUENCY, JOULE_TO_WATT
+from .utils import JOULE_TO_WATT
 
 class PowerClientIntel(PowerLinux):
     def __init__(self):
