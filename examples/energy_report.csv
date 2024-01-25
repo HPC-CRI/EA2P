@@ -1,0 +1,4 @@
+Project Name,Datetime,core,uncore,psys,package-0,GPU 0,DRAM energy (Wh),Total Elapsed CPU Time (sec),Package,Algorithm,Algorithm's parameters,Data type,Data shape
+test,01/25/2024 10:52:56,0.00347,4e-05,0.09104,0.02331,0.00011,1e-05,30.85619,time,sleep,,,
+test,01/25/2024 11:05:38,0.00406,7e-05,0.16856,0.02592,0.13448,0.01012,30.84139,time,sleep,,,
+test,01/25/2024 11:09:59,9.46665,0.0473,364.5944,58.08005,468.85,36.2915,30.80639,time,sleep,,,

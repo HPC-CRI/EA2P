@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Python classes monitoring GPU's power usage
+Python classes monitoring AMD CPU's power usage
 during a time delimited between a start and a stop methods
 """
 __all__ = ["PowerAmdCpu", "PowerAmdGpu"]
@@ -11,6 +11,8 @@ import logging
 import signal
 import re
 import pandas as pd
+import os  # Added missing import
+import numpy as np  # Added missing import
 
 from .utils import SAMPLING_FREQUENCY
 
@@ -29,11 +31,8 @@ class NoGpuPower():
 
 
 class PowerAmdCpu():
-
     def __init__(self):
-        #super().__init__()
         self.logging_process = None
-
 
     def start(self):
         """
@@ -41,8 +40,6 @@ class PowerAmdCpu():
         """
         if self.logging_process is not None:
             self.stop()
-
-        #LOGGER.info("starting AMD CPU power monitoring ...")
 
         self.logging_process = subprocess.Popen(
             [
@@ -61,11 +58,16 @@ class PowerAmdCpu():
         """
         Stop the measure process if started
         """
-        #LOGGER.info("stopping AMD CPU power monitoring ...")
         self.logging_process.send_signal(signal.SIGINT)
         self.logging_process = None
 
     def parse_log(self):
+        """
+        Parse the AMD CPU power log file.
+
+        Returns:
+        - DataFrame containing energy data.
+        """
         with open(r"%s" % AMDPOWERLOG_FILENAME, 'r') as fp:
             data = fp.read()
         data = data.replace(",", ".")
@@ -78,37 +80,34 @@ class PowerAmdCpu():
         return energy
 
 
-
 class PowerAmdGpu():
-
     def __init__(self):
         pass
+
     def append_energy_usage(self):
+        """
+        Append AMD GPU energy usage.
+
+        Returns:
+        - Dictionary containing GPU energy usage.
+        """
         cmd = "rocm-smi --showpower | grep 'GPU' > tmp_gpu_energy.txt"
         os.system(cmd)
         with open(r"tmp_gpu_energy.txt", 'r') as fp:
             data = fp.readlines()
 
         energy = {}
-        for line in data :
+        for line in data:
             linesplit = line.split(":")
-            energy.update({linesplit[0].replace(' ', ''):float(linesplit[2]) * SAMPLING_FREQUENCY / 3600})
-        
+            energy.update({linesplit[0].replace(' ', ''): float(linesplit[2])})
+
         return energy
 
 
-
-
-
-
-
 class PowerAmdCpu2():
-
     def __init__(self):
-        #super().__init__()
         self.logging_process = None
         self.interval = SAMPLING_FREQUENCY
-
 
     def start(self):
         """
@@ -116,8 +115,6 @@ class PowerAmdCpu2():
         """
         if self.logging_process is not None:
             self.stop()
-
-        #LOGGER.info("starting AMD CPU power monitoring ...")
 
         self.logging_process = subprocess.Popen(
             [
@@ -137,11 +134,16 @@ class PowerAmdCpu2():
         """
         Stop the measure process if started
         """
-        #LOGGER.info("stopping AMD CPU power monitoring ...")
         self.logging_process.send_signal(signal.SIGINT)
         self.logging_process = None
 
     def parse_log(self):
+        """
+        Parse the AMD CPU power log file.
+
+        Returns:
+        - DataFrame containing energy data.
+        """
         with open(r"%s" % AMDPOWERLOG_FILENAME, 'r') as fp:
             data = fp.read()
         data = data.replace("\nPkgWatt", "PkgWatt")
@@ -149,16 +151,9 @@ class PowerAmdCpu2():
         data = data[:-1]
         energy_pakages = data.split("PkgWatt ")[1:]
         e_all = []
-        for pakage in energy_pakages :
+        for pakage in energy_pakages:
             e_all.append(pakage.split(" ")[:3])
-        #print(e_all)
-        energy = pd.DataFrame(e_all, columns = ['Total Pakages (Wh)'] + ['Pakage ' + str(i) + "(Wh)" for i in range(1, len(e_all[1]))])
+        energy = pd.DataFrame(e_all, columns=['Total Pakages (Wh)'] + ['Pakage ' + str(i) + "(Wh)" for i in range(1, len(e_all[1]))])
         energy = energy.astype(float).sum().to_frame().T
         energy = energy * self.interval / 3600
         return energy
-
-
-#/usr/sbin/turbostat --show "PkgWatt" --quiet
-#sudo setcap cap_sys_rawio=ep /usr/sbin/turbostat
-#
-

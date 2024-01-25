@@ -1,0 +1,2 @@
+	Size: 32 GB
+	Volatile Size: 32 GB

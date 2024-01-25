@@ -33,21 +33,24 @@ class Power(abc.ABC):
 
     def __get_powerlog_file(self):
         """
-        Retrieve the log file where is written the PowerLog logs
+        Retrieve the log file where PowerLog logs are written.
         """
 
     def start(self):
         """
-        Starts the recording processus
+        Starts the recording process.
         """
 
     def stop_thread(self):
+        """
+        Stops the recording thread.
+        """
         self.thread.do_run = False
         self.thread.join()
 
     def stop(self):
         """
-        Stops the recording processus
+        Stops the recording process.
         """
 
 
@@ -57,9 +60,17 @@ class NoPower(Power):
         self.start_time = 0
 
     def start(self):
+        """
+        Start the recording process.
+        This method records the start time for later calculation.
+        """
         self.start_time = time.time()
 
     def stop(self):
+        """
+        Stops the recording process.
+        This method calculates the total energy consumption based on the recorded start time.
+        """
         end_time = time.time()
         self.record[TOTAL_ENERGY_CPU] = 0
         self.record[TOTAL_ENERGY_MEMORY] = 0
@@ -70,6 +81,12 @@ class NoPower(Power):
 class PowerLinux(Power):
     @staticmethod
     def __get_cpu_ids():
+        """
+        Get CPU identifiers from files in CPU_IDS_DIR.
+        
+        Returns:
+        - List of CPU identifiers.
+        """
         cpu_ids = []
         for filename in glob.glob(CPU_IDS_DIR):
             with open(filename, "r") as f:
@@ -80,6 +97,12 @@ class PowerLinux(Power):
 
     @staticmethod
     def __get_cpu_domains():
+        """
+        Get CPU domains from entries in POWERLOG_PATH_LINUX.
+        
+        Returns:
+        - List of tuples containing CPU domain information.
+        """
         cpu_doms = []
         for entry in os.scandir(POWERLOG_PATH_LINUX):
             if (entry.is_dir() and ("intel-rapl:" in entry.name)):
@@ -92,7 +115,3 @@ class PowerLinux(Power):
         super().__init__()
         self.cpu_ids = self.__get_cpu_ids()
         self.cpu_doms = self.__get_cpu_domains()
-        
-
-
-

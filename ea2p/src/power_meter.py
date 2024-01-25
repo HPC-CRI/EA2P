@@ -12,18 +12,12 @@ __all__ = ["PowerMeter"]
 import datetime
 import json
 import logging
-import shutil
 import sys
 import traceback
-import warnings
-import cpuinfo
 
 import pandas as pd  # type: ignore
-import requests
 
-from .wrapper import*
-
-POWER_DEVICES = "cpu,ram,gpu"
+from .wrapper import *
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,15 +25,37 @@ LOGGER = logging.getLogger(__name__)
 class PowerMeter:
 
     DATETIME_FORMAT = "%m/%d/%Y %H:%M:%S"  # "%c"
+    DEFAULT_CONFIG_FILE = "config_energy.json"
+    DEFAULT_FILEPATH = "energy_report.csv"
+    LOGGING_FILE = "logging_file.txt"
 
-    # ----------------------------------------------------------------------
     # Constructors
-    def __init__(self, project_name="test_project", user_name="toto", cpu_power_log_path="", powerlog_save_path="", filepath=None, output_format="csv" ):
-        self.pue = 1.3
+    def __init__(
+        self,
+        project_name="test_project",
+        filepath=None,
+        config_file=None,
+        output_format="csv",
+        print_to_cli=True
+    ):
+        """
+        Initialize the PowerMeter instance.
 
-        self.power = PowerWrapper(POWER_DEVICES)
+        Parameters:
+        - config_file: Path to the configuration file.
+        - project_name: Name of the project.
+        - filepath: Path to the output file.
+        - output_format: Format for the output file.
+        - print_to_cli: To print the result of measurement in Terminal at the end
+        """
 
-        self.user = user_name
+        self.project_name = project_name
+        self.config_file = Path(config_file) if config_file else Path.cwd() / self.DEFAULT_CONFIG_FILE
+        self.filepath = Path(filepath) if filepath else Path.cwd() / self.DEFAULT_FILEPATH
+        self.output_format = output_format
+        self.print_to_cli = print_to_cli
+
+        self.power = PowerWrapper(self.config_file)
 
         self.used_package = ""
         self.used_algorithm = ""
@@ -47,24 +63,23 @@ class PowerMeter:
         self.used_data_shape = ""
         self.used_algorithm_params = ""
 
-        if not filepath:
-            LOGGER.info("No current filepath, will use the default")
-            self.filepath = Path.cwd() / "CPU_validation_emissions.csv"
-        else:
-            LOGGER.info("Filepath given, will save there")
-            self.filepath = Path(filepath)
+        self.logging_filename = PACKAGE_PATH / self.LOGGING_FILE
 
-        self.output_format = output_format
-
-        self.logging_filename = PACKAGE_PATH / LOGGING_FILE
-
-    @classmethod
-    def from_config(cls, path):
-        with open(path) as file:
-            args = json.load(file)
-        return cls(**args)
 
     def measure_power(self, package, algorithm, data_type="", data_shape="", algorithm_params=""):
+        """
+        Decorator to measure power consumption during the execution of a function.
+
+        Parameters:
+        - package: Package name.
+        - algorithm: Algorithm name.
+        - data_type: Type of data.
+        - data_shape: Shape of data.
+        - algorithm_params: Parameters of the algorithm.
+
+        Returns:
+        - Decorator function.
+        """
         if not algorithm or not package:
             raise SyntaxError(
                 "Please input a description for the function you are trying "
@@ -74,7 +89,13 @@ class PowerMeter:
 
         def decorator(func):
             def wrapper(*args, **kwargs):
-                self.start_measure(package, algorithm, data_type=data_type, data_shape=data_shape, algorithm_params=algorithm_params)
+                self.start_measure(
+                    package,
+                    algorithm,
+                    data_type=data_type,
+                    data_shape=data_shape,
+                    algorithm_params=algorithm_params,
+                )
                 try:
                     results = func(*args, **kwargs)
                 finally:
@@ -86,6 +107,16 @@ class PowerMeter:
         return decorator
 
     def __set_used_arguments(self, package, algorithm, data_type="", data_shape="", algorithm_params=""):
+        """
+        Set the arguments used during power measurement.
+
+        Parameters:
+        - package: Package name.
+        - algorithm: Algorithm name.
+        - data_type: Type of data.
+        - data_shape: Shape of data.
+        - algorithm_params: Parameters of the algorithm.
+        """
         self.used_package = package
         self.used_algorithm = algorithm
         self.used_data_type = data_type
@@ -93,24 +124,69 @@ class PowerMeter:
         self.used_algorithm_params = algorithm_params
 
     def __call__(self, package, algorithm, data_type="", data_shape="", algorithm_params=""):
-        
+        """
+        Set the arguments used during power measurement using a decorator syntax.
+
+        Parameters:
+        - package: Package name.
+        - algorithm: Algorithm name.
+        - data_type: Type of data.
+        - data_shape: Shape of data.
+        - algorithm_params: Parameters of the algorithm.
+        """
         self.__set_used_arguments(package, algorithm, data_type=data_type, data_shape=data_shape, algorithm_params=algorithm_params)
         return self
 
-    def __enter__(self, ):
-        self.start_measure(self.used_package, self.used_algorithm, data_type=self.used_data_type, data_shape=self.used_data_shape, algorithm_params=self.used_algorithm_params)
+    def __enter__(self):
+        """
+        Enter method for context manager. Starts power measurement.
+        """
+        self.start_measure(
+            self.used_package,
+            self.used_algorithm,
+            data_type=self.used_data_type,
+            data_shape=self.used_data_shape,
+            algorithm_params=self.used_algorithm_params,
+        )
 
     def __exit__(self, exit_type, value, traceback):
+        """
+        Exit method for context manager. Stops power measurement.
+        """
         self.stop_measure()
 
     def start_measure(self, package, algorithm, data_type="", data_shape="", algorithm_params=""):
+        """
+        Start measuring power consumption.
+
+        Parameters:
+        - package: Package name.
+        - algorithm: Algorithm name.
+        - data_type: Type of data.
+        - data_shape: Shape of data.
+        - algorithm_params: Parameters of the algorithm.
+        """
         self.power.start()
-        self.__set_used_arguments(package, algorithm, data_type=data_type, data_shape=data_shape, algorithm_params=algorithm_params)
+        self.__set_used_arguments(
+            package,
+            algorithm,
+            data_type=data_type,
+            data_shape=data_shape,
+            algorithm_params=algorithm_params,
+        )
 
     def stop_measure(self):
+        """
+        Stop measuring power consumption.
+        """
         self.power.stop()
+
+        if self.print_to_cli :
+            print("Energy report for the experiment : \n\n")
+            print(self.power.record)
+
         self.__log_records(
-            self.power.record, 
+            self.power.record,
             algorithm=self.used_algorithm,
             package=self.used_package,
             data_type=self.used_data_type,
@@ -119,33 +195,53 @@ class PowerMeter:
         )
 
     def __record_data_to_file(self, data):
+        """
+        Record power data to a file.
+
+        Parameters:
+        - data: Power data to be recorded.
+
+        Returns:
+        - True if recording is successful, False otherwise.
+        """
         try:
-            #data = pd.DataFrame(info, index=[0])
-            if Path(self.filepath).exists():
+            if self.filepath.exists():
                 data.to_csv(self.filepath, mode="a", index=False, header=False)
             else:
                 data.to_csv(self.filepath, index=False)
             return True
-        except Exception:
-            LOGGER.error("* error during the csv writing process *")
+        except Exception as e:
+            LOGGER.error("Error during the CSV writing process: %s", str(e))
             LOGGER.error(traceback.format_exc())
             return False
 
     def __log_records(self, recorded_power, algorithm="", package="", data_type="", data_shape="", algorithm_params=""):
+        """
+        Log recorded power data.
+
+        Parameters:
+        - recorded_power: Recorded power data.
+        - algorithm: Algorithm name.
+        - package: Package name.
+        - data_type: Type of data.
+        - data_shape: Shape of data.
+        - algorithm_params: Parameters of the algorithm.
+        """
         payload_prefix = {
-            "Datetime": datetime.datetime.now().strftime(self.DATETIME_FORMAT),
-            "User ID": self.user,
+            "Project Name": self.project_name,
+            "Datetime": datetime.datetime.now().strftime(self.DATETIME_FORMAT)
         }
         payload_sufix = {
-            #"PUE": self.pue,
             "Package": package,
             "Algorithm": algorithm,
             "Algorithm's parameters": algorithm_params,
             "Data type": data_type,
             "Data shape": data_shape,
         }
-        #data_final = {}
-        #data_final.update(payload_prefix).update(recorded_power).update(payload_sufix)
-        written = self.__record_data_to_file(pd.concat([pd.DataFrame(payload_prefix, index=[0]), recorded_power, pd.DataFrame(payload_sufix, index=[0])], axis = 1))
-        LOGGER.info("* recorded into a file? %s*", written)
-
+        written = self.__record_data_to_file(
+            pd.concat(
+                [pd.DataFrame(payload_prefix, index=[0]), recorded_power, pd.DataFrame(payload_sufix, index=[0])],
+                axis=1,
+            )
+        )
+        LOGGER.info("Recorded into a file? %s", written)
