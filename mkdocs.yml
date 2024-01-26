@@ -1,0 +1,64 @@
+site_name: Welcome to EA2P (Energy-Aware Application Profiling) Tool Documentation
+site_url: https://hpc-cri.github.io/EA2P/
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline 
+        name: Switch to dark mode
+      primary: teal
+      accent: purple 
+    - scheme: slate 
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode    
+      primary: teal
+      accent: lime
+
+nav:
+  - Home: index.md
+  - Installation: install.md
+  - 'Developper Guide':
+    - 'Reference': 'api_documentation/api_documentation.md'
+    - 'ea2p.PowerMeter': 'api_documentation/PowerMeter.md'
+  - About:
+    - 'License': 'about/license.md'
+    - 'Release Notes': 'about/release-notes.md'
+    - 'Contribution': about/Contribution.md
+
+plugins:
+  - social
+
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://hpc-cri.github.io/EA2P/
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+
+copyright: |
+  &copy; 2023 <a href="https://github.com/HPC-CRI/EA2P"  target="_blank" rel="noopener">Energy-CRI-ENSMP</a>

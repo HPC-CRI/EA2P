@@ -2,13 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='EA2P',
-    version='0.1',
+    version='0.3.dev',
     packages=find_packages(),
     install_requires=[
         'numpy',
         'pandas',
         'py-cpuinfo',
-        ''
+        'psutil',
+        'requests'
         # Add your dependencies here
     ],
     author='Roblex NANA',
