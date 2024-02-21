@@ -1,31 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Python classes monitoring GPU's power usage
-during a time delimited between a start and a stop methods
+Python classes monitoring Nvidia GPU's power usage by querying system management interface.
 """
-__all__ = ["NoGpuPower", "PowerNvidia"]
+__all__ = ["PowerNvidia"]
 
 import subprocess
 
-from .utils import SAMPLING_FREQUENCY
-
-class NoGpuPower():
-    """
-    Class used when no GPU is available
-    """
-
-    def __init__(self):
-        pass
-
-
 class PowerNvidia():
     """
-    Class for monitoring GPU power usage
+    Class for monitoring Nvidia GPU power usage
     """
 
     def __init__(self):
-        # Query drivers for the first time to avoid "Unknown" in the result
+        # Query drivers for the first time to avoid "Unknown" in the result. This also test the availability and working for Nvidia's drivers
         try:
             subprocess.check_output("nvidia-smi --query-gpu=power.draw --format=csv", shell=True)
         except subprocess.CalledProcessError:
@@ -33,7 +21,10 @@ class PowerNvidia():
 
     def append_energy_usage(self):
         """
-        Append GPU energy usage to the result.
+        Append Nvidia GPU energy usage to dict containing sampling power measurements.
+
+        Returns:
+        - Dictionary containing GPU power usage per GPU devices.
         """
 
         cmd = "nvidia-smi --query-gpu=power.draw --format=csv"

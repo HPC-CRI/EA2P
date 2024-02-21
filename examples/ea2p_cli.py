@@ -2,8 +2,6 @@ import time
 import sys
 import subprocess
 
-sys.path.append("/home/nana/Documents/EA2P")
-
 from ea2p import PowerMeter #Our package
 power_meter = PowerMeter(project_name="omp_parallel")
 

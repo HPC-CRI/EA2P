@@ -1,12 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""
 
-"""
-# __all__ = [
-#     "PowerLinux",
-#     "NoPower",
-# ]
+__all__ = ["PowerLinux","PowerProfiler"]
 
 import abc
 import datetime
@@ -26,7 +21,12 @@ from .utils import*
 LOGGER = logging.getLogger(__name__)
 
 
-class Power(abc.ABC):
+class PowerProfiler(abc.ABC):
+    """
+    This abstract class PowerProfiler defines two abstract methods "start" and "stop" which need to be implemented by any subclass inheriting from it. 
+    These methods will handle the actual start and stop operations for profiling power consumption, respectively depending on device drivers or registries access. 
+    """
+
     def __init__(self):
         self.record = {}
         self.thread = None
@@ -54,31 +54,12 @@ class Power(abc.ABC):
         """
 
 
-class NoPower(Power):
-    def __init__(self):
-        super().__init__()
-        self.start_time = 0
+class PowerLinux(PowerProfiler):
+    """
+    A class "PowerLinux" which inherits from "PowerProfiler" for energy/power profiling under Linux systems.
+    We have two statics methods to get the RAPL domains and subsdomains on the Linux system for Intel CPUs.
+    """
 
-    def start(self):
-        """
-        Start the recording process.
-        This method records the start time for later calculation.
-        """
-        self.start_time = time.time()
-
-    def stop(self):
-        """
-        Stops the recording process.
-        This method calculates the total energy consumption based on the recorded start time.
-        """
-        end_time = time.time()
-        self.record[TOTAL_ENERGY_CPU] = 0
-        self.record[TOTAL_ENERGY_MEMORY] = 0
-        self.record[TOTAL_CPU_TIME] = end_time - self.start_time
-        self.record[TOTAL_ENERGY_ALL] = 0
-
-
-class PowerLinux(Power):
     @staticmethod
     def __get_cpu_ids():
         """

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Python classes monitoring RAM's power usage
+Python classes monitoring RAM's power usage on devices where there is no RAPL for DRAM domain like Intel client architectures and AMD CPU.
 """
 from .utils import SAMPLING_FREQUENCY  
 
@@ -13,7 +13,7 @@ import psutil
 
 class PowerRam:
     """
-    Class for monitoring RAM power usage
+    Class for estimate RAM power usage using analytical method from nominal TDP values and workloads utilisation.
     """
 
     def __init__(self):
@@ -23,10 +23,13 @@ class PowerRam:
     def append_energy_usage(self):
         """
         Append RAM energy usage to the result.
+        
+        Returns:
+        	Dictionary containing CPU energy usage.
         """
         try:
             ram_usage_percent = psutil.virtual_memory()[2]
-            energy_usage = {"DRAM energy": (self.ram_power * self.number_slots * (ram_usage_percent / 100.0))}
+            energy_usage = {"ram": (self.ram_power * self.number_slots * (ram_usage_percent / 100.0))}
             # print(energy_usage)
             return energy_usage
         except Exception as e:
@@ -36,6 +39,9 @@ class PowerRam:
     def get_number_slots(self):
         """
         Get the number of RAM slots.
+        
+        Returns:
+        	Integer representing the number of memory modules intalled/used on the SoC.
         """
         try:
             os.system("dmidecode -t 17 | grep 'DIMM' > tmp_ram_slots.txt")
@@ -49,6 +55,9 @@ class PowerRam:
     def get_memory_power(self):
         """
         Get the power consumption based on RAM type and size.
+        
+        Returns:
+        	A float, representing the default TDP as estimation from RAM modules informations using DMI interfaces
         """
         try:
             os.system("dmidecode -t 17 | grep 'Type: ' > tmp_ram_type.txt")

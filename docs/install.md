@@ -30,9 +30,9 @@ python ea2p_cli.py my_application
 
 Add annotations to your code to measure energy consumption. 
 ```python
-from ea2p import Meter
+from ea2p import PowerMeter
 config_path = “config.csv” #set the configuration file for flexibility
-power_meter = Meter(config_path)
+power_meter = PowerMeter(config_path)
 
 # Annotate the code section you want to measure. "package" and "algorithm" params are required. 
 @power_meter.measure_power(package="time", algorithm="sleep",)
@@ -42,7 +42,27 @@ def test_sleep(interval):
 test_sleep(180) 		
 ```
 
-## Configuration
+### Using context manager
+
+```python
+from ea2p import PowerMeter
+
+with PowerMeter() as meter:
+   time.sleep(180)		
+```
+
+### Using start/stop
+
+```python
+from ea2p import PowerMeter
+config_path = “config.csv” #set the configuration file for flexibility
+power_meter = PowerMeter(config_path)
+
+meter.start_measure()
+time.sleep(180)
+meter.stop_measure()		
+```
+## Configuration file
 
 EA2P allows configuration for specific settings such as devices list, sampling frequency, and more. Configuration can be done via a json configuration file.
 ```json
@@ -52,4 +72,7 @@ EA2P allows configuration for specific settings such as devices list, sampling f
     "energy_unit": "J"
 }
 ```
+
+**For more examples of how to use the profiler, clone the original repository from Github : [https://github.com/HPC-CRI/EA2P](https://github.com/HPC-CRI/EA2P) and run examples under `ea2p/examples` directory or visit the API reference and developper guide : [EA2P documentation](https://hpc-cri.github.io/EA2P/).**
+
 

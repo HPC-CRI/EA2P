@@ -5,21 +5,31 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
-    - toc.integrate
+    - navigation.footer
+    - navigation.indexes
+    - navigation.tabs.sticky
     - navigation.top
-    - search.suggest
-    - search.highlight
+    - content.action.edit
+    - content.action.view
+    - content.tooltips
     - content.tabs.link
     - content.code.annotation
     - content.code.copy
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
   language: en
   palette:
-    - scheme: default
+    # palette for dark mode
+    - scheme: green
       toggle:
         icon: material/toggle-switch-off-outline 
         name: Switch to dark mode
       primary: teal
       accent: purple 
+    # Palette for light mode
     - scheme: slate 
       toggle:
         icon: material/toggle-switch
@@ -30,16 +40,50 @@ theme:
 nav:
   - Home: index.md
   - Installation: install.md
-  - 'Developper Guide':
-    - 'Reference': 'api_documentation/api_documentation.md'
-    - 'ea2p.PowerMeter': 'api_documentation/PowerMeter.md'
+  - API Reference:
+    - 'API Reference': api_documentation/api_documentation.md
+    - 'ea2p.PowerMeter': api_documentation/PowerMeter.md
+    - 'ea2p.wrapper': api_documentation/wrapper.md
+    - 'ea2p.power': api_documentation/power.md
+    - 'ea2p.amd': api_documentation/amd.md
+    - 'ea2p.intel': api_documentation/intel.md
+    - 'ea2p.nvidia': api_documentation/nvidia.md
+    - 'ea2p.ram': api_documentation/ram.md
+  - Developper Guide: developper_guide.md
   - About:
-    - 'License': 'about/license.md'
-    - 'Release Notes': 'about/release-notes.md'
+    #- 'About Us': about/about.md
+    #- 'License': 'about/license.md'
+    #- 'Release Notes': 'about/release-notes.md'
     - 'Contribution': about/Contribution.md
 
 plugins:
   - social
+  - search
+  - markdown-exec
+  - mkdocstrings:
+      handlers:
+        python:
+          import:
+          - https://docs.python.org/3/objects.inv
+          - https://installer.readthedocs.io/en/stable/objects.inv  # demonstration purpose in the docs
+          - https://mkdocstrings.github.io/autorefs/objects.inv
+          paths: [ea2p/src/]
+          options:
+            docstring_options:
+              ignore_init_summary: false
+            docstring_section_style: list
+            #filters: ["!^_"]
+            heading_level: 1
+            inherited_members: true
+            merge_init_into_class: true
+            separate_signature: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            summary: true
 
 extra:
   social:
@@ -59,6 +103,14 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.mark
   - attr_list
+  - callouts
+  - pymdownx.magiclink
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - toc:
+      permalink: "¤"
+
 
 copyright: |
-  &copy; 2023 <a href="https://github.com/HPC-CRI/EA2P"  target="_blank" rel="noopener">Energy-CRI-ENSMP</a>
+  &copy; 2024 <a href="https://github.com/HPC-CRI/EA2P"  target="_blank" rel="noopener">Energy-CRI-ENSMP</a>

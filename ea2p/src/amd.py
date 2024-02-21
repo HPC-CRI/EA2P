@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Python classes monitoring AMD CPU's power usage
-during a time delimited between a start and a stop methods
+Python classes monitoring AMD CPU's and GPU's power usage
+during a timeframe delimited between a start and a stop methods
 """
 __all__ = ["PowerAmdCpu", "PowerAmdGpu"]
 
@@ -21,22 +21,13 @@ LOGGER = logging.getLogger(__name__)
 AMDPOWERLOG_FILENAME = "amdPowerLog.txt"
 
 
-class NoGpuPower():
-    """
-    Class used when no GPU is available
-    """
-
-    def __init__(self):
-        pass
-
-
 class PowerAmdCpu():
     def __init__(self):
         self.logging_process = None
 
     def start(self):
         """
-        Start the measure process
+        Start the measure process using Linux Perf Tools through perf stat system wide sampling
         """
         if self.logging_process is not None:
             self.stop()
@@ -56,17 +47,17 @@ class PowerAmdCpu():
 
     def stop(self):
         """
-        Stop the measure process if started
+        Stop the measure process if started. A signal is send to the logging process to stop measurements
         """
         self.logging_process.send_signal(signal.SIGINT)
         self.logging_process = None
 
     def parse_log(self):
         """
-        Parse the AMD CPU power log file.
+        Parse the AMD CPU power log file to energy values per package and per nodes.
 
         Returns:
-        - DataFrame containing energy data.
+        	DataFrame containing energy data.
         """
         with open(r"%s" % AMDPOWERLOG_FILENAME, 'r') as fp:
             data = fp.read()
@@ -86,10 +77,10 @@ class PowerAmdGpu():
 
     def append_energy_usage(self):
         """
-        Append AMD GPU energy usage.
+        Append AMD GPU energy usage to dict containing sampling power measurements.
 
         Returns:
-        - Dictionary containing GPU energy usage.
+        	Dictionary containing GPU power usage per GPU devices.
         """
         cmd = "rocm-smi --showpower | grep 'GPU' > tmp_gpu_energy.txt"
         os.system(cmd)
@@ -111,7 +102,7 @@ class PowerAmdCpu2():
 
     def start(self):
         """
-        Start the measure process
+        Start the AMD CPU power measurement process using Linux turbostat tools
         """
         if self.logging_process is not None:
             self.stop()
@@ -142,7 +133,7 @@ class PowerAmdCpu2():
         Parse the AMD CPU power log file.
 
         Returns:
-        - DataFrame containing energy data.
+        	DataFrame containing energy data.
         """
         with open(r"%s" % AMDPOWERLOG_FILENAME, 'r') as fp:
             data = fp.read()

@@ -20,9 +20,30 @@ WH_TO_JOULE = 3600
 WH_TO_KW = 1/1000
 
 
-class PowerWrapper(Power):
+class PowerWrapper(PowerProfiler):
     """
-    A wrapper class to manage and coordinate the power monitoring of different devices.
+    A wrapper class for energy monitoring across various devices including CPU, GPU, and DRAM.
+
+    This class facilitates aggregation, coordination of execution, and formatting of the output 
+    for measured energy values from different devices.
+
+    Attributes:
+        energy_unit (str): The energy unit for the final result report (e.g., 'J' for joule, 'Wh' for Watt-hour, 'kWh' for kilowatt-hour).
+        power_devices (str): A string containing the list of specified devices to profile.
+        record (dict): A dictionary to contain the recorded measurements.
+        thread (Thread): The main Python Thread instance that coordinates measurement from other subprocess threads.
+        interval (float): A float value to specify the sampling frequency of measurements.
+        power_objects (list): A list that stores different instances of measurements classes for various devices.
+        intel (bool): A boolean value indicating the presence (True) or absence (False) of an Intel CPU.
+        amd (bool): A boolean value indicating the presence (True) or absence (False) of an AMD CPU.
+
+    Methods:
+        start(): Begins monitoring energy usage from the specified list of devices.
+        stop(): Stops the energy monitoring process and agregate results.
+        get_power_consumption(list): Continuously get energy usage from all specified power monitoring instances.
+        __set_power(str): Create instances of power monitoring classes based on the specified power devices ("e.g., "cpu, Ram, gpu").
+        get_all_power(list): Get energy usage from all specified power monitoring instances at a specific sampling period.
+
     """
 
     def __init__(self, config_file="config_energy.json"):
@@ -30,20 +51,21 @@ class PowerWrapper(Power):
         Initialize the PowerWrapper instance.
 
         Parameters:
-        - config_file: Path to the configuration file.
+        	config_file (str): Path to the configuration file to use. If not provided, the default energy unit is Watt-hour with sampling frequency of one(1) second and measurements are across both CPU GPU and RAM
         """
         super().__init__()
 
         with open(config_file, 'r') as file:
             config = json.load(file)
 
-        self.power_devices = config.get('devices_list')
-        self.energy_unit = config.get('energy_unit')
+        self.power_devices = config.get('devices_list').lower()
+        self.energy_unit = config.get('energy_unit').lower()
         self.record = {}
         self.thread = None
         self.interval = config.get('sampling_freq')
         self.amd = False
         self.intel = False
+        self.intel_ram = False
         self.power_objects = self.__set_power(self.power_devices)
 
     def __set_power(self, power_devices):
@@ -51,11 +73,12 @@ class PowerWrapper(Power):
         Create instances of power monitoring classes based on the specified power devices.
 
         Parameters:
-        - power_devices (str): A comma-separated string specifying the power devices to monitor.
+        	power_devices (str): A comma-separated string specifying the power devices to monitor.
 
         Returns:
-        - power_objects (list): A list of power monitoring instances.
+        	power_objects (list): A list of power monitoring instances, respectivelly for each device in the devices list.
         """
+        cpu_brand = ""
         power_objects = list()
         if ("cpu" not in power_devices) and ("gpu" not in power_devices) and ("ram" not in power_devices):
             raise ValueError("Please specify at least one device type to monitor in [cpu, gpu, ram] ")
@@ -85,17 +108,17 @@ class PowerWrapper(Power):
             except Exception:
                 pass
 
-        if "ram" in power_devices:
+        if "ram" in power_devices and not ("Xeon" in cpu_brand):
             power_objects.append(PowerRam())
 
         return power_objects
 
     def get_all_power(self, power_objects):
         """
-        Get energy usage from all specified power monitoring instances.
+        Get energy usage from all specified power monitoring instances at a specific sampling period.
 
         Parameters:
-        - power_objects (list): List of power monitoring instances.
+        	power_objects (list): List of power monitoring instances, respectivelly for each device in the devices list.
         """
         energy_usage = {}
         for obj in power_objects:
@@ -108,7 +131,7 @@ class PowerWrapper(Power):
         Continuously get energy usage from all specified power monitoring instances.
 
         Parameters:
-        - power_objects (list): List of power monitoring instances.
+        	power_objects (list): List of power monitoring instances, respectivelly for each device in the devices list.
         """
         if self.amd:
             self.amd_power.start()
@@ -133,7 +156,22 @@ class PowerWrapper(Power):
 
     def start(self):
         """
-        Start the power monitoring process.
+        Start the power monitoring process. This function creates the main threads to coordinate subprocesses
+        that profile energy/power on different devices.
+
+        This function initializes threads to profile power consumption on various devices concurrently. Each thread
+        corresponds to a specific device and is responsible for initiating the power profiling process for that device.
+        The devices are specified in a list of device names. Power profiling subprocesses for each device are
+        coordinated through separate threads to ensure parallel execution.
+
+        Example:
+            PowerWrapper wrapper = PowerWrapper()
+            wrapper.start()
+
+        Note:
+            This function assumes the existence of a class or function responsible for profiling power consumption
+            on individual devices. The actual power profiling logic should be implemented within the respective
+            threads or subprocesses.
         """
         LOGGER.info("Starting CPU power monitoring...")
         self.start_time = time.time()
@@ -147,7 +185,17 @@ class PowerWrapper(Power):
 
     def stop(self):
         """
-        Stop the power monitoring process and collect the final power consumption data.
+        Stop the power monitoring process and collect/aggregate the final power consumption data.
+
+        This function stops the power monitoring process by terminating the main threads responsible for coordinating
+        the profiling of energy/power consumption on various devices. It ensures the orderly shutdown of all
+        power profiling subprocesses and releases any associated resources. Additionally, it collects and aggregates
+        data from the different devices' profiling, allowing for further analysis or reporting.
+
+        Example:
+            PowerWrapper wrapper = PowerWrapper()
+            wrapper.stop()
+
         """
         if self.thread and self.thread.is_alive():
             self.stop_thread()

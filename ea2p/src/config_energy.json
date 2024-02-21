@@ -1,0 +1,5 @@
+{
+    "devices_list": "cpu, gpu, ram",
+    "sampling_freq": 1.0,
+    "energy_unit": "J"
+}

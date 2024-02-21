@@ -3,9 +3,7 @@
 """
 
 """
-# __all__ = [
-#     "PowerClient",
-# ]
+__all__ = ["PowerClientIntel","PowerServerIntel"]
 
 import glob
 from .utils import *
@@ -26,7 +24,7 @@ class PowerClientIntel(PowerLinux):
         Get the list of CPU sub-domains.
 
         Returns:
-        - List of tuples containing CPU domain information.
+        	List of tuples containing CPU domain information.
         """
         cpu_sub_doms = []
         for dom, name in self.cpu_doms:
@@ -46,7 +44,7 @@ class PowerClientIntel(PowerLinux):
         Append CPU energy usage.
 
         Returns:
-        - Dictionary containing CPU energy usage.
+        	Dictionary containing CPU energy usage.
         """
         energy_usage = {}
         energies = [self.get_cpu_energy_package(cpu_domain, cpu_sub_domain)
@@ -69,11 +67,11 @@ class PowerClientIntel(PowerLinux):
         Get CPU energy usage for a specific sub-domain.
 
         Parameters:
-        - domain: CPU domain.
-        - sub_domain: CPU sub-domain.
+        	domain (int): CPU domain.
+        	sub_domain (int): CPU sub-domain.
 
         Returns:
-        - Energy usage for the specified CPU sub-domain.
+        	Energy usage for the specified CPU sub-domain.
         """
         energy_file = (
             Path(READ_RAPL_PATH.format(domain))
@@ -88,10 +86,10 @@ class PowerClientIntel(PowerLinux):
         Get CPU energy usage for a specific CPU.
 
         Parameters:
-        - cpu: CPU identifier.
+        	cpu (int): CPU identifier.
 
         Returns:
-        - Energy usage for the specified CPU.
+        	Energy usage for the specified CPU.
         """
         cpu_energy_file = Path(READ_RAPL_PATH.format(cpu)) / RAPL_ENERGY_FILE
         energy = int(cpu_energy_file.read_text())
@@ -111,7 +109,7 @@ class PowerServerIntel(PowerLinux):
         Get the list of DRAM IDs.
 
         Returns:
-        - List of tuples containing CPU and DRAM IDs.
+        	List of tuples containing CPU and DRAM IDs.
         """
         dram_id_list = []
         for cpu in self.cpu_ids:
@@ -132,7 +130,7 @@ class PowerServerIntel(PowerLinux):
         Append CPU and memory energy usage.
 
         Returns:
-        - Dictionary containing CPU and memory energy usage.
+        	Dictionary containing CPU and memory energy usage.
         """
         energy_usage = {}
         energy_usage["energy_cpu"] = sum([self.__get_cpu_energy(cpu_id) for cpu_id in self.cpu_ids]) / JOULE_TO_WATT
@@ -144,10 +142,10 @@ class PowerServerIntel(PowerLinux):
         Get CPU energy usage for a specific CPU.
 
         Parameters:
-        - cpu: CPU identifier.
+        	cpu (int): CPU identifier.
 
         Returns:
-        - Energy usage for the specified CPU.
+        	Energy usage for the specified CPU.
         """
         cpu_energy_file = Path(READ_RAPL_PATH.format(cpu)) / RAPL_ENERGY_FILE
         energy = int(cpu_energy_file.read_text())
@@ -158,11 +156,11 @@ class PowerServerIntel(PowerLinux):
         Get DRAM energy usage for a specific CPU and DRAM.
 
         Parameters:
-        - cpu: CPU identifier.
-        - dram: DRAM identifier.
+        	cpu (int): CPU identifier.
+        	dram (int): DRAM identifier.
 
         Returns:
-        - Energy usage for the specified DRAM.
+        	Energy usage for the specified DRAM.
         """
         dram_energy_file = (
             Path(READ_RAPL_PATH.format(cpu))

@@ -4,7 +4,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 import time
 import sys
-sys.path.append("/home/nana/Documents/EA2P")
 
 import tensorflow as tf
 import tensorflow_datasets as tfds
@@ -72,9 +71,7 @@ model = build_model(num_classes=NUM_CLASSES)
 @power_meter.measure_power(
     package="tensorflow",
     algorithm="VGG16",
-    data_type="images",
-    data_shape="(32,32,60000)",
-    algorithm_params="batch_size=64,epochs=10,optimizer=Adam,loss='categorical_crossentropy'"
+    algorithm_params="batch_size=" + str(batch_size) + "epochs=" + str(epochs) + "IMG_SIZE=" + str(IMG_SIZE)
 )
 def train_model():
     model.fit(ds_train, epochs=epochs, batch_size=batch_size, validation_data=ds_test)

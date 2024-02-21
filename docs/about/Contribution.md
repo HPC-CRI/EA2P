@@ -13,4 +13,4 @@ EA2P is licensed under the [MIT License](https://chat.openai.com/c/link/to/licen
 
 ## Contact
 
-For any queries, support, or feedback, feel free to reach out via [email](roblex.nana_tchakoute@minesparis.psl.eu) or through our [website](https://ea2p.com/).
+For any queries, support, or feedback, feel free to reach out via [email](mailto:roblex.nana_tchakoute@minesparis.psl.eu) or through our [website](https://ea2p.com/).
