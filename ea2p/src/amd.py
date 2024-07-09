@@ -23,6 +23,10 @@ AMDPOWERLOG_FILENAME = "amdPowerLog.txt"
 
 class PowerAmdCpu():
     def __init__(self):
+    	"""
+	Python classes monitoring AMD CPU's and GPU's power usage
+	during a timeframe delimited between a start and a stop methods
+	"""
         self.logging_process = None
 
     def start(self):

@@ -1,4 +1,4 @@
-site_name: Welcome to EA2P (Energy-Aware Application Profiling) Tool Documentation
+site_name: Welcome to EA2P (Energy-Aware Application Profiler) Documentation
 site_url: https://hpc-cri.github.io/EA2P/
 theme:
   name: material

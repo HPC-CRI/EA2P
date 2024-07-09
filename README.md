@@ -1,4 +1,4 @@
-# EA2P (Energy-Aware Application Profiling) Tool
+# EA2P : Energy-Aware Application Profiler
 ![PyPI Downloads](https://img.shields.io/pypi/dm/EA2P?color=brightgreen&label=PyPI%20downloads&logo=pypi&logoColor=yellow)
 
 EA2P is an energy profiling tool designed to accurately measure the energy consumption of various computer devices, including RAM, CPU, and GPU. It supports multiple hardware vendors such as Nvidia, AMD, and Intel, allowing comprehensive energy measurements across different systems. The particularity of the tool is the flexibility over target device selection feature and the support for AMD devices energy measurement.  
@@ -26,7 +26,7 @@ sudo apt install msr-tools   # For Ubuntu/Debian
 ```
 - **ROCm-SMI :** ROCm-SMI (Radeon Open Compute System Management Interface) is a command-line interface developed by AMD as part of the ROCm (Radeon Open Compute) software stack. It provides a set of tools for managing and monitoring AMD GPUs kernels that are compatible with the ROCm platform. So you should install the ROCm stack for GPU profiling if it is not installed on your AMD GPU platform : [install ROCm](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/install-overview.html)
 - **Nvidia-SMI :** Nvidia-SMI(Nvidia System Management Interface) is the ROCm-SMI alternative if you are working with Nvidia GPU. Generally it comes with Nvidia drivers installation : [install Nividia Drivers](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#driver-installation)
-- **Perf tools :** It's used to monitore energy for AMD CPU since we didn't find a way to access the AMD RAPL files in Linux systems.
+- **Perf tools :** It is used to monitore energy for AMD CPU since we didn't find a way to access the AMD RAPL files in Linux systems.
 
 
 ## Installation
