@@ -62,8 +62,16 @@ class PowerAmdCpu():
         with open(r"%s" % AMDPOWERLOG_FILENAME, 'r') as fp:
             data = fp.read()
         data = data.replace(",", ".")
-        p = re.compile(r'([\d.]+)\s+Joules power/energy-pkg/')
+        p = re.compile(r'([\d]+.+[\d.]+)\s+Joules power/energy-pkg/')
         data = p.findall(data)
+        data = [d.replace(" ", "") for d in data]
+        for i in range(len(data)):
+            # Count the total number of periods
+            total_periods = data[i].count('.')
+            # If there are more than one periods, replace all but the last one
+            if total_periods > 1:
+                # Remove all periods except the last one
+                data[i] = data[i].replace('.', '', total_periods - 1)
         cols = ["package " + str(i) for i in range(len(data))]
         energy = pd.DataFrame(np.array([data]), columns=cols)
         energy = energy.astype("float32")
