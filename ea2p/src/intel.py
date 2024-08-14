@@ -22,7 +22,6 @@ class PowerClientIntel(PowerLinux):
     def get_cpu_sub_domains(self):
         """
         Get the list of CPU sub-domains.
-
         Returns:
         	List of tuples containing CPU domain information.
         """
@@ -42,7 +41,6 @@ class PowerClientIntel(PowerLinux):
     def append_energy_usage(self):
         """
         Append CPU energy usage.
-
         Returns:
         	Dictionary containing CPU energy usage.
         """
@@ -69,7 +67,6 @@ class PowerClientIntel(PowerLinux):
         Parameters:
         	domain (int): CPU domain.
         	sub_domain (int): CPU sub-domain.
-
         Returns:
         	Energy usage for the specified CPU sub-domain.
         """
@@ -87,7 +84,6 @@ class PowerClientIntel(PowerLinux):
 
         Parameters:
         	cpu (int): CPU identifier.
-
         Returns:
         	Energy usage for the specified CPU.
         """
@@ -107,7 +103,6 @@ class PowerServerIntel(PowerLinux):
     def __get_drams_ids(self):
         """
         Get the list of DRAM IDs.
-
         Returns:
         	List of tuples containing CPU and DRAM IDs.
         """
@@ -128,7 +123,6 @@ class PowerServerIntel(PowerLinux):
     def append_energy_usage(self):
         """
         Append CPU and memory energy usage.
-
         Returns:
         	Dictionary containing CPU and memory energy usage.
         """
@@ -143,7 +137,6 @@ class PowerServerIntel(PowerLinux):
 
         Parameters:
         	cpu (int): CPU identifier.
-
         Returns:
         	Energy usage for the specified CPU.
         """
@@ -158,7 +151,6 @@ class PowerServerIntel(PowerLinux):
         Parameters:
         	cpu (int): CPU identifier.
         	dram (int): DRAM identifier.
-
         Returns:
         	Energy usage for the specified DRAM.
         """

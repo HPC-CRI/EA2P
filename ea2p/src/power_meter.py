@@ -94,7 +94,6 @@ class PowerMeter:
             package (str): Package name of the algorithm to profile.
             algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
             algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
-
         Returns:
             Decorator function.
         """
@@ -205,7 +204,6 @@ class PowerMeter:
 
         Parameters:
             data (DataFrame): Power data to be recorded.
-
         Returns:
             True if recording is successful, False otherwise.
         """

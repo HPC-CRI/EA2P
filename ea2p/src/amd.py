@@ -56,7 +56,6 @@ class PowerAmdCpu():
     def parse_log(self):
         """
         Parse the AMD CPU power log file to energy values per package and per nodes.
-
         Returns:
         	DataFrame containing energy data.
         """
