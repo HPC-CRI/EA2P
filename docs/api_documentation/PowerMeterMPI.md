@@ -1,2 +1,2 @@
-# ::: ea2p.src.power_meter.PowerMeterMPI
+# ::: ea2p.src.power_meter_mpi.PowerMeterMPI
 

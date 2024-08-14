@@ -59,23 +59,16 @@ class PowerMeter:
     LOGGING_FILE = "logging_file.txt"
 
     # Constructors
-    def __init__(
-        self,
-        project_name="test_project",
-        output_filepath=None,
-        config_file=None,
-        output_format="csv",
-        print_to_cli=True
-    ):
+    def __init__(self, project_name="test_project", output_filepath=None, config_file=None, output_format="csv", print_to_cli=True):
         """
         Initialize the PowerMeter instance.
 
         Parameters:
-			config_file (str): Path to the configuration file.
-			project_name (str): Name of the project.
-			output_filepath (str): Path to the output file.
-			output_format (str): Format for the output file.
-			print_to_cli (bool): To print the result of measurement in Terminal at the end
+            config_file (str): Path to the configuration file.
+            project_name (str): Name of the project.
+            output_filepath (str): Path to the output file.
+            output_format (str): Format for the output file.
+            print_to_cli (bool): To print the result of measurement in Terminal at the end
         """
 
         self.project_name = project_name
@@ -98,12 +91,12 @@ class PowerMeter:
         Decorator to measure power consumption during the execution of a function.
 
         Parameters:
-		    package (str): Package name of the algorithm to profile.
-		    algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
-		    algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
+            package (str): Package name of the algorithm to profile.
+            algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
+            algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
 
         Returns:
-        	Decorator function.
+            Decorator function.
         """
         if not algorithm or not package:
             raise SyntaxError(
@@ -134,9 +127,9 @@ class PowerMeter:
         Set the arguments used during power measurement.
 
         Parameters:
-		    package (str): Package name of the algorithm to profile.
-		    algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
-		    algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
+            package (str): Package name of the algorithm to profile.
+            algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
+            algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
 
         """
         self.used_package = package
@@ -148,9 +141,9 @@ class PowerMeter:
         Set the arguments used during power measurement using a decorator syntax.
 
         Parameters:
-		    package (str): Package name of the algorithm to profile.
-		    algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
-        	algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
+            package (str): Package name of the algorithm to profile.
+            algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
+            algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
 
         """
         self.__set_used_arguments(package, algorithm, algorithm_description=algorithm_description)
@@ -177,9 +170,9 @@ class PowerMeter:
         Start measuring power consumption.
 
         Parameters:
-		    package (str): Package name of the algorithm to profile.
-		    algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
-        	algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
+            package (str): Package name of the algorithm to profile.
+            algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
+            algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
 
         """
         self.power.start()
@@ -211,10 +204,10 @@ class PowerMeter:
         Record power data to a file.
 
         Parameters:
-        	data (DataFrame): Power data to be recorded.
+            data (DataFrame): Power data to be recorded.
 
         Returns:
-        	True if recording is successful, False otherwise.
+            True if recording is successful, False otherwise.
         """
         try:
             if self.output_filepath.exists():
@@ -232,10 +225,10 @@ class PowerMeter:
         Log recorded power data.
 
         Parameters:
-		    recorded_power (DataFrame): Recorded power data.
-		    package (str): Package name of the algorithm to profile.
-		    algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
-		    algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
+            recorded_power (DataFrame): Recorded power data.
+            package (str): Package name of the algorithm to profile.
+            algorithm (str): Name of the algorithm to profile in the list of instruction of the decorated function.
+            algorithm_description (str): Description of the profiled algorithm acording to the experimental setup or tesbet details (eg, dataset used, epochs for training, batch size, etc...).
 
         """
         payload_prefix = {

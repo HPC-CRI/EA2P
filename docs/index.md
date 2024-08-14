@@ -34,7 +34,6 @@ sudo apt install msr-tools   # For Ubuntu/Debian
 sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev   # For Ubuntu/Debian as example of installation
 ```
 And use the following to run the instrumented code :
-
 ```bash
 mpiexec -n 4 python my_instrumented_mpi_app.py   # You can change mpiexec with mpirun depending of your MPI installation.
 ```
