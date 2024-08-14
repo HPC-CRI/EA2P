@@ -7,10 +7,7 @@ power_meter = PowerMeter(project_name="omp_parallel")
 
 @power_meter.measure_power(
     package="subprocess",
-    algorithm="run",
-    data_type="",
-    data_shape="",
-    algorithm_params=""
+    algorithm="run"
 )
 def call_c_program(program):
     subprocess.run(program, shell=True)

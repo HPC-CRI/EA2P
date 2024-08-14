@@ -93,7 +93,11 @@ class PowerWrapper(PowerProfiler):
                 self.amd = True
                 LOGGER.info("AMD found")
             else:
-                power_objects.append(NoCpuPower())
+                raise SystemError(
+                    "Unable to detect the CPU informations of your system. "
+                    "Try to remove CPU in your config_energy.json file "
+                    "to monitor other components like RAM or GPU energies "
+                )
 
         if "gpu" in power_devices:
             try:

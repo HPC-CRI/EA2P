@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='EA2P',
-    version='0.4',
+    version='1.0',
     packages=find_packages(),
     install_requires=[
         'numpy',
@@ -14,7 +14,7 @@ setup(
     ],
     author='Roblex NANA',
     author_email='nanatchakouteroblex@email.com',
-    description='EA2P : A flexible and accurate multi-platforms profiling tool for fine-grained energy measurement of applications',
+    description='EA2P (Energy-Aware Application Profiler): A multi-platform profiling tool that offers precise and detailed energy usage measurements for applications, with the ability to adapt to different needs.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/HPC-CRI/EA2P',

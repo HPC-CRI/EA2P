@@ -1,0 +1,7 @@
+# ea2p
+numpy
+pandas
+py-cpuinfo
+psutil
+requests
+mpi4py

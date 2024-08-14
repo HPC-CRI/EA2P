@@ -18,6 +18,8 @@ Please consult the [documentation](https://hpc-cri.github.io/EA2P/) or support r
 - **Automatic Device Detection:** Automatically detects device vendors and selects appropriate commands, simplifying usage for users and ensuring compatibility across different hardware configurations.
 
 - **Selective Device Measurement:** Allows users to select specific devices for measurement, offering the flexibility to focus on a subset of the system components, which can be advantageous for targeted analysis.
+- **Multi-node Measurement:** Provides users with the ability to monitor energy consumption across multiple nodes in traditional HPC or cluster computing environments. A comprehensive energy-per-rank (node) breakdown and total energy consumption for each device type in a homogeneous node system are provided to you.
+- **Docker support:** To further enhance the usability and portability of the energy measurement tool, it has been containerized using Docker.
 
 ## Requirements
 - **RAPL (Running Average Power Limit):** it is a feature found in modern Intel processors that allows monitoring and controlling power consumption. RAPL provides a set of registers that can be used to read power-related information, such as power consumption, and to set power limits for the processor. If it is not installed, you can run the code below:
@@ -26,7 +28,16 @@ sudo apt install msr-tools   # For Ubuntu/Debian
 ```
 - **ROCm-SMI :** ROCm-SMI (Radeon Open Compute System Management Interface) is a command-line interface developed by AMD as part of the ROCm (Radeon Open Compute) software stack. It provides a set of tools for managing and monitoring AMD GPUs kernels that are compatible with the ROCm platform. So you should install the ROCm stack for GPU profiling if it is not installed on your AMD GPU platform : [install ROCm](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/install-overview.html)
 - **Nvidia-SMI :** Nvidia-SMI(Nvidia System Management Interface) is the ROCm-SMI alternative if you are working with Nvidia GPU. Generally it comes with Nvidia drivers installation : [install Nividia Drivers](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#driver-installation)
-- **Perf tools :** It is used to monitore energy for AMD CPU since we didn't find a way to access the AMD RAPL files in Linux systems.
+- **Perf tools :** It is used to monitore energy for AMD CPU since we did not yet find a way to access the AMD RAPL files in Linux systems.
+- **MPI library (for multi-node profiling) :** Ensure that you have an MPI implementation installed on your system. Common implementations include MPICH and OpenMPI. 
+```bash
+sudo apt-get install openmpi-bin openmpi-common libopenmpi-dev   # For Ubuntu/Debian as example of installation
+```
+And use the following to run the instrumented code :
+
+```bash
+mpiexec -n 4 python my_instrumented_mpi_app.py   # You can change mpiexec with mpirun depending of your MPI installation.
+```
 
 
 ## Installation

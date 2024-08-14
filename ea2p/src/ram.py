@@ -60,32 +60,32 @@ class PowerRam():
 		os.system("sudo dmidecode -t 17 | grep 'Memory Device' > tmp_ram_slots.txt")
 		#os.system("sudo-g5k dmidecode -t 17 | grep 'Memory Device' > tmp_ram_slots.txt")
 		with open(r"tmp_ram_slots.txt", 'r') as fp:
-		    lines = len(fp.readlines())
+			lines = len(fp.readlines())
 		return lines
 
 	def get_memory_power(self):
 		#os.system("sudo-g5k dmidecode -t 17 | grep 'Type: ' > tmp_ram_type.txt")
 		os.system("sudo dmidecode -t 17 | grep 'Type: ' > tmp_ram_type.txt")
 		with open(r"tmp_ram_type.txt", 'r') as fp:
-		    ram_type = fp.readlines()[0]
+			ram_type = fp.readlines()[0]
 
 		os.system("sudo dmidecode -t 17 | grep 'GB' > tmp_ram_size.txt")
 		#os.system("sudo-g5k dmidecode -t 17 | grep 'GB' > tmp_ram_size.txt")
 		with open(r"tmp_ram_size.txt", 'r') as fp2:
-		    ram_size = fp2.readlines()[0]
+			ram_size = fp2.readlines()[0]
 
 		if ("DDR5" in ram_type) or ("DDR4" in ram_type) :
-		    if "16" in ram_size :
-		        return 4.0
-		    elif "32" in ram_size:
-		        return 5.0
-		    elif "64" in ram_size:
-		        return 6.0
-		    elif "128" in ram_size:
-		        return 8.0
-		    else :
-		        return 10.0
+			if "16" in ram_size :
+				return 4.0
+			elif "32" in ram_size:
+				return 5.0
+			elif "64" in ram_size:
+				return 6.0
+			elif "128" in ram_size:
+				return 8.0
+			else :
+				return 10.0
 		elif "DDR3" in ram_type:
-		    return 4.5
+			return 4.5
 		else :
-		    return 0.0
+			return 0.0

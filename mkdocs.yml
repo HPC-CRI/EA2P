@@ -43,6 +43,7 @@ nav:
   - API Reference:
     - 'API Reference': api_documentation/api_documentation.md
     - 'ea2p.PowerMeter': api_documentation/PowerMeter.md
+    - 'ea2p.PowerMeterMPI': api_documentation/PowerMeterMPI.md
     - 'ea2p.wrapper': api_documentation/wrapper.md
     - 'ea2p.power': api_documentation/power.md
     - 'ea2p.amd': api_documentation/amd.md
