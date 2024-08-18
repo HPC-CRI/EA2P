@@ -1,1 +1,1 @@
-	Locator: DIMM A
+Memory Device

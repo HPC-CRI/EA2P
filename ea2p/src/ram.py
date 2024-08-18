@@ -4,10 +4,7 @@
 __all__ = ["PowerRam"]
 
 import os
-import subprocess
 import psutil
-
-from .utils import SAMPLING_FREQUENCY
 
 
 class PowerRam():
@@ -37,22 +34,25 @@ class PowerRam():
 		"""
 		ram_usage = psutil.virtual_memory()
 		ram_percent = ram_usage[2]
-		THRESHOLD0 = 4
-		THRESHOLD1 = 12
+		THRESHOLD0 = 5
+		THRESHOLD1 = 10
 		THRESHOLD2 = 25
 		THRESHOLD3 = 50
+		THRESHOLD4 = 70
 		if ram_usage[2] <= THRESHOLD0 :
-			ram_percent = 30
+			ram_percent = 35
 		elif ram_usage[2] <= THRESHOLD1 :
 			ram_percent = 65
 		elif ram_usage[2] <= THRESHOLD2 :
 			ram_percent = 70
 		elif ram_usage[2] <= THRESHOLD3 :
 			ram_percent = 75
+		elif ram_usage[2] <= THRESHOLD4 :
+			ram_percent = 80
 		else :
 			ram_percent = 85
 
-		energy_usage = {"DRAM energy (Wh)":(self.ram_power * self.number_slots * ram_percent / 100) * SAMPLING_FREQUENCY / 3600.0}
+		energy_usage = {"dram":(self.ram_power * self.number_slots * ram_percent / 100)}
 		#print(energy_usage)
 		return energy_usage
 

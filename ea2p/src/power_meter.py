@@ -4,9 +4,7 @@
 __all__ = ["PowerMeter"]
 
 import datetime
-import json
 import logging
-import sys
 import traceback
 
 import pandas as pd  # type: ignore

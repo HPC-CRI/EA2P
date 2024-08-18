@@ -7,7 +7,6 @@ from mpi4py import MPI
 import datetime
 import pandas as pd
 import logging
-import sys
 import traceback
 from .wrapper import * 
 

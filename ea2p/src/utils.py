@@ -24,8 +24,8 @@ POWERLOG_PATH_LINUX = Path("/sys/class/powercap/intel-rapl")
 
 LOGGING_FILE = "power_logs.csv"
 
-TOTAL_CPU_TIME = "Total Elapsed CPU Time (sec)"
-TOTAL_GPU_TIME = "Total Elapsed GPU Time (sec)"
+TOTAL_CPU_TIME = "CPU Time [s]"
+TOTAL_GPU_TIME = "GPU Time [s]"
 
 
 CPU_IDS_DIR = "/sys/devices/system/cpu/cpu*/topology/physical_package_id"

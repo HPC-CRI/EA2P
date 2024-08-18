@@ -8,8 +8,6 @@ from .intel import PowerClientIntel, PowerServerIntel
 from .amd import PowerAmdCpu, PowerAmdGpu
 from .ram import PowerRam
 
-import datetime
-import glob
 import logging
 import subprocess
 import threading
@@ -85,9 +83,12 @@ class PowerWrapper(PowerProfiler):
 
         if "cpu" in power_devices:
             cpu_brand = cpuinfo.get_cpu_info()['brand_raw']
-            if "Core(TM)" in cpu_brand or "Xeon" in cpu_brand:
-                self.intel_power = PowerClientIntel()
+            if "Core(TM)" in cpu_brand:
                 self.intel = True
+                self.intel_power = PowerClientIntel()
+            elif "Xeon" in cpu_brand:
+                self.intel = True
+                self.intel_power = PowerServerIntel()
             elif "AMD" in cpu_brand:
                 self.amd_power = PowerAmdCpu()
                 self.amd = True
@@ -184,7 +185,9 @@ class PowerWrapper(PowerProfiler):
         self.record = {}
         if self.thread and self.thread.is_alive():
             self.stop_thread()
+            self.thread.join()
         self.thread = threading.Thread(target=self.get_power_consumption, args=(self.power_objects,))
+        # self.thread.do_run = True
         self.thread.start()
 
     def stop(self):
@@ -202,12 +205,16 @@ class PowerWrapper(PowerProfiler):
 
         """
         if self.thread and self.thread.is_alive():
-            self.stop_thread()
+            # self.stop_thread()
+            self.thread.do_run = False
+            self.thread.join()
+        
+        end_time = time.time()
 
         usages = pd.DataFrame(self.power_draws)
         cpu_energy = pd.DataFrame()
         usages = usages.sum().to_frame().T
-        usages = usages * self.interval / 3600          # convert watt to watt-hour
+        usages = usages * self.interval / 3600          # convert watt to watt-hour for RAM and GPU especially
 
         if self.amd:
             self.amd_power.stop()
@@ -224,13 +231,11 @@ class PowerWrapper(PowerProfiler):
             cpu_energy = cpu_energy.sum().to_frame().T
             usages = pd.concat([cpu_energy, usages], axis=1)
 
-        end_time = time.time()
-
-        if self.energy_unit=="J":
+        if self.energy_unit=="j":
             usages = usages * WH_TO_JOULE
-        elif self.energy_unit=="WH":
+        elif self.energy_unit=="wh":
             pass
-        elif self.energy_unit=="KWH":
+        elif self.energy_unit=="kwh":
             usages = usages * WH_TO_KW
         else :
             LOGGER.info("WARRNING : The specified energy unit is not supported. "
